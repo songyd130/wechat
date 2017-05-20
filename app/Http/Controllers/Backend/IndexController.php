@@ -18,6 +18,6 @@ class IndexController extends Controller
     {
         $admin = Auth::guard('backend')->user();
         //return $admin->name;
-        return view('home');
+        return view('backend.index.index');
     }
 }
