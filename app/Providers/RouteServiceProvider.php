@@ -38,8 +38,10 @@ class RouteServiceProvider extends ServiceProvider
     public function map(Router $router)
     {
         $this->mapWebRoutes($router);
-
-        //
+        //后台路由
+        $this->mapBackendRoutes($router);
+        //API路由
+        $this->mapApiRoutes($router);
     }
 
     /**
@@ -53,9 +55,40 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes(Router $router)
     {
         $router->group([
-            'namespace' => $this->namespace, 'middleware' => 'web',
+            'namespace' => $this->namespace,
+            'middleware' => 'web',
         ], function ($router) {
-            require app_path('Http/routes.php');
+            require app_path('Http/Routes/web.php');
+        });
+    }
+
+    /**
+     * @author  Song Yingdong <songyingdong@kmf.com>
+     * @param Router $router
+     */
+    protected function mapBackendRoutes(Router $router)
+    {
+        $router->group([
+            'namespace' => sprintf('%s\%s', $this->namespace, 'Backend'),
+            'middleware' => ['web', 'backend'],
+            'prefix'     => 'backend',
+        ], function ($router) {
+            require app_path('Http/Routes/backend.php');
+        });
+    }
+
+    /**
+     * @author  Song Yingdong <songyingdong@kmf.com>
+     * @param Router $router
+     */
+    protected function mapApiRoutes(Router $router)
+    {
+        $router->group([
+            'namespace' => sprintf('%s\%s', $this->namespace, 'Api'),
+            'middleware' => 'api',
+            'prefix'     => 'api',
+        ], function ($router) {
+            require app_path('Http/Routes/api.php');
         });
     }
 }
